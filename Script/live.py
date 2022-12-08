@@ -181,8 +181,8 @@ if __name__ == '__main__':
     t2.start() # filter
     t3.start() # rms
     t4.start() # plot
-    #t5.start() # stim
-    #t6.start() # monitor
+    t5.start() # stim
+    t6.start() # monitor
 
     # Join the GUI. Blocking mechanism: will move on and terminate the other processes once it is closed only
     t4.join() # wait for GUI to close
