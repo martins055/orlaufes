@@ -41,7 +41,6 @@ if __name__ == '__main__':
     from orlau_emg             import funcStreamEmg
     from orlau_rms             import funcRms
     from orlau_filter          import funcFilter        # Option 1 : simpliest, for variable frequency noise
-    from orlau_filter_mask     import funcFilterMask    # Option 2 : mask faster processing but requires constant frequency noise
     from orlau_monitor         import funcMonitor
     from orlau_stim            import funcStim2
 
