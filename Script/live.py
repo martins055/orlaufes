@@ -41,6 +41,7 @@ if __name__ == '__main__':
     from orlau_emg             import funcStreamEmg
     from orlau_rms             import funcRms
     from orlau_filter          import funcFilter        # Option 1 : simpliest, for variable frequency noise
+    from orlau_imu             import funcStreamImu
     from orlau_monitor         import funcMonitor
     from orlau_stim            import funcStim2
 
@@ -60,8 +61,8 @@ if __name__ == '__main__':
 
         # EMG and filtering
         'emg_muscles_names'     : ['deltoid','biceps'], # list of the muscles that have an EMG/IMU: one device per muscle
-        'emg_thresh_noStim'     : [0.00032,0.00032],                # threshold at which a muscle is considered active (when there is no stimulation running, in which case it is higher)
-        'emg_thresh_withStim'   : [0.00032,0.00032],                # threshold at which a muscle is considered active (when stimulation is ongoing)
+        'emg_thresh_noStim'     : [0.00032,0.00032],    # threshold at which a muscle is considered active (when there is no stimulation running, in which case it is higher)
+        'emg_thresh_withStim'   : [0.00032,0.00032],    # threshold at which a muscle is considered active (when stimulation is ongoing)
         'emg_connected'         : False,                # flag indicating if we have successfully connected to the delsys base station and are streaming live
         'emg_shutdown'          : False,                # flag indicating if we should do a graceful exit of the emg process
         'emg_dummyMode'         : False,                # for offline testing live-stream
@@ -83,6 +84,14 @@ if __name__ == '__main__':
         'rms_low'               : 400,
         'rms_window'            : 150,
         'rms_iter'              : 0,                    # keep track of the number of batches to synchronise the processes with blocking mechanisms
+
+        # IMU
+        'imu_connected'         : False,                # flag indicating if we have successfully connected to the delsys base station and are streaming live
+        'imu_shutdown'          : False,                # flag indicating if we should do a graceful exit of the emg process
+        'imu_samples_per_read'  : 300,                  # size of batch of data received from the basestation
+        'imu_maxArraySize'      : 6000,                 # max length of data arrays to keep in memory before dumping to disk (used by all arrays)
+        'imu_iter'              : 0,                    # keep track of the number of batches to synchronise the processes with blocking mechanisms
+        'imu_iter_sync_emg'     : None,                 # to sync emg/imu : when EMG was iternumber 1, what was the iternumber of IMU? (it's actually a tuple if EMG started faster than IMU - which is unlikely)
 
         # Controller
         'controller_on'         : False,                # if True, the intensity is set by the feedback of the controller. If False, we are in "manual" mode and the pulse intensity is set in the GUI. The controller is called by the EMG process thus this parameter here
@@ -122,6 +131,10 @@ if __name__ == '__main__':
         
         'emg_delt_rms'        : np.array([]), # after the filtering, rms is performed
         'emg_bic_rms'         : np.array([]),
+        
+        'imu_all'             : np.array([]), # we constantly save the imu data from the basestation
+        'imu_delt'            : np.array([]),
+        'imu_bic'             : np.array([]),
         
         'controller_val_hist' : np.array([]), # history of the values of the controller
         'pulse_val_hist'      : np.array([]), # history of the values of the pulse intensity, might be useful when we look at the calibrations?
@@ -174,6 +187,8 @@ if __name__ == '__main__':
     t5 = multiprocessing.Process(target=funcStim2,        args=(sharedConfig, sharedData),                             kwargs={"verbose":False,"debug":False})
     # 6) console monitor for summary of processes
     t6 = multiprocessing.Process(target=funcMonitor,      args=(sharedConfig, sharedData))
+    # 7) get imu from delsys, dump to file only
+    t7 = multiprocessing.Process(target=funcStreamImu,    args=(sharedConfig, sharedData, sharedQueue1, sharedQueue2), kwargs={"verbose":False,"debug":False})
 
     # Start the processes
     t1.start() # emg delsys
@@ -182,6 +197,7 @@ if __name__ == '__main__':
     t4.start() # plot
     t5.start() # stim
     t6.start() # monitor
+    t7.start() # imu
 
     # Join the GUI. Blocking mechanism: will move on and terminate the other processes once it is closed only
     t4.join() # wait for GUI to close
@@ -191,14 +207,12 @@ if __name__ == '__main__':
     # Graceful exit by setting flags so that each process has time to finish and wrap up current iteration
     sharedConfig['emg_shutdown']  = True
     sharedConfig['stim_shutdown'] = True
+    sharedConfig['imu_shutdown']  = True
 
     ###
-    # Tidy up recorded values
+    # Dump config file also
     ###
-    """
-    # need to put all in separate columns, and add time also
-    # need to make separate ones for each "recorded" times (in between the values of recordBtn_timeFrames)
-
+        
     # pickles
     finalConfig = {}
     finalData   = {}
@@ -207,23 +221,17 @@ if __name__ == '__main__':
         finalConfig[key] = sharedConfig[key]
     for key in sharedData:
         finalData[key] = sharedData[key]
-    filehandler = open(CURR_DIR+'/Data/'+outputFolder+'/config.pickle', 'wb')
+    filehandler = open(config['dataSaveFolder']+'/conf_sharedConfig.pickle', 'wb')
     pickle.dump(finalConfig, filehandler)
     filehandler.close()
-    filehandler = open(CURR_DIR+'/Data/'+outputFolder+'/data.pickle', 'wb')
+    filehandler = open(config['dataSaveFolder']+'/conf_sharedData.pickle', 'wb')
     pickle.dump(finalData, filehandler)
     filehandler.close()
 
-    # csv
-    for fileName in [key for key in sharedData]:
-        print(fileName)
+    # csv (plain text)
+    for fileName in ['controller_val_hist','pulse_val_hist','activ_delt_hist','activ_bic_hist']:
         print(f"saving {fileName} : len {len(sharedData[fileName])}")
-        np.savetxt(CURR_DIR+'/Data/'+outputFolder+'/'+fileName+'.csv', sharedData[fileName], delimiter=",")
-    
-    # matlab
-    sio.savemat(CURR_DIR+'/Data/'+outputFolder+'/config.mat', config)
-    sio.savemat(CURR_DIR+'/Data/'+outputFolder+'/data.mat', data)
-    """
+        np.savetxt(config['dataSaveFolder']+'/conf_'+fileName+'.csv', sharedData[fileName], delimiter=",")
 
     sleep(3) # give some time to the processes to finish before the main process exits (or it will kill spawned ones), esp. the stimulator to send the disconnection signal to the DLL
 
