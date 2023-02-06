@@ -188,7 +188,7 @@ if __name__ == '__main__':
     # 6) console monitor for summary of processes
     t6 = multiprocessing.Process(target=funcMonitor,      args=(sharedConfig, sharedData))
     # 7) get imu from delsys, dump to file only
-    t7 = multiprocessing.Process(target=funcStreamImu,    args=(sharedConfig, sharedData, sharedQueue1, sharedQueue2), kwargs={"verbose":True,"debug":False})
+    t7 = multiprocessing.Process(target=funcStreamImu,    args=(sharedConfig, sharedData, sharedQueue1, sharedQueue2), kwargs={"verbose":False,"debug":False})
 
     # Start the processes
     t1.start() # emg delsys
