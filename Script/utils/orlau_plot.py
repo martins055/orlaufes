@@ -256,7 +256,7 @@ def functionLivePlot(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbo
     btn_paramPreviewType_FILT.clicked.connect(slot_PreviewType_FILT)
     def slot_PreviewType_RMS():
         sharedConfig['gui_preview_type'] = 'rms'
-        paramPreviewType2.setText(f"{sharedConfig['gui_preview_type']}")
+        paramPreviewType2.setText(f"{sharedConfig['gui_preview_type']}")    
         print(f"previewType set to {sharedConfig['gui_preview_type']}")
     btn_paramPreviewType_RMS.clicked.connect(slot_PreviewType_RMS)
 
@@ -1142,20 +1142,20 @@ def functionLivePlot(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbo
         if sharedConfig['gui_preview_type'] == 'raw':
             
             if  debug: print(f"getting raw filtered")
-            dataToAddToPreview_DELT = sharedData['emg_delt_raw']
-            dataToAddToPreview_BIC  = sharedData['emg_bic_raw']
+            dataToAddToPreview_DELT = sharedData['emg_delt_raw'][-sharedConfig['maxArraySize']:]
+            dataToAddToPreview_BIC  = sharedData['emg_bic_raw'][-sharedConfig['maxArraySize']:]
 
         elif sharedConfig['gui_preview_type'] == 'filt':
             
             if  debug: print(f"getting filtered data")
-            dataToAddToPreview_DELT = sharedData['emg_delt_filt']
-            dataToAddToPreview_BIC  = sharedData['emg_bic_filt']
+            dataToAddToPreview_DELT = sharedData['emg_delt_filt'][-sharedConfig['maxArraySize']:]
+            dataToAddToPreview_BIC  = sharedData['emg_bic_filt'][-sharedConfig['maxArraySize']:]
 
         elif sharedConfig['gui_preview_type'] == 'rms':
             
             if  debug: print(f"getting rms")
-            dataToAddToPreview_DELT = sharedData['emg_delt_rms']
-            dataToAddToPreview_BIC  = sharedData['emg_bic_rms']
+            dataToAddToPreview_DELT = sharedData['emg_delt_rms'][-sharedConfig['maxArraySize']:]
+            dataToAddToPreview_BIC  = sharedData['emg_bic_rms'][-sharedConfig['maxArraySize']:]
 
         if verbose: print(f"\nPlot: added {len(dataToAddToPreview_DELT)} values of {sharedConfig['gui_preview_type']}")
         
