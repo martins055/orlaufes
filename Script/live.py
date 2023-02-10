@@ -100,7 +100,7 @@ if __name__ == '__main__':
         # Stim
         'stim_musclesName'      : 'triceps',            # list of the muscles stimulated
         'stim_channelNumbers'   : 1,                    # lisf of the color of the cables of the stimulator (red = 0, blue = 1, grey = 2)
-        'stim_max_intensitiy'   : 15,                   # the hardcoded max intensity chosen at calibration for each muscle (milliAmp)
+        'stim_max_intensity'   : 15,                   # the hardcoded max intensity chosen at calibration for each muscle (milliAmp)
         'pulse_width'           : 300,                  # the pulse length, or 'time' in microseconds (us)
         'pulse_period'          : 40,                   # the period in milliSeconds, so if period is 25ms it is 1/25 = 40Hz ; 1/10 = 100Hz
         'pulse_intensity_man'   : 0,                    # current or intensity in milliAmps: start at 0 - the one we set manually in the GUI

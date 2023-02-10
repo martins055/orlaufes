@@ -104,7 +104,7 @@ def funcStim2(sharedConfig, sharedData, verbose=False, debug=False):
             # if AUTO: get controller's current value
             if sharedConfig['controller_on']:
                 new_pulse_intensity = sharedConfig['pulse_intensity_auto']
-                if debug: print(f"automode, new_pulse_intensity is {sharedConfig['controller_value']} * {sharedConfig['stim_max_intensitiy']} = {new_pulse_intensity}")
+                if debug: print(f"automode, new_pulse_intensity is {sharedConfig['controller_value']} * {sharedConfig['stim_max_intensity']} = {new_pulse_intensity}")
 
             # if MANUAL: get value from GUI
             else:
@@ -112,9 +112,9 @@ def funcStim2(sharedConfig, sharedData, verbose=False, debug=False):
                 if debug: print(f"manual, new_pulse_intensity is {new_pulse_intensity}")
 
             # double check that it's not > max or set to max
-            if new_pulse_intensity > sharedConfig['stim_max_intensitiy']:
-                new_pulse_intensity = sharedConfig['stim_max_intensitiy']
-                if debug: print(f"intensity > max ({sharedConfig['stim_max_intensitiy']}), keeping {new_pulse_intensity}")
+            if new_pulse_intensity > sharedConfig['stim_max_intensity']:
+                new_pulse_intensity = sharedConfig['stim_max_intensity']
+                if debug: print(f"intensity > max ({sharedConfig['stim_max_intensity']}), keeping {new_pulse_intensity}")
 
             # update settings on the stim
             ml_update.channel_config[channelNumber].period            = sharedConfig['pulse_period']

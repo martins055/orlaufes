@@ -191,7 +191,7 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
             # the ratio (0 -> 1) given by the stimulator is:
             sharedConfig['controller_value'] = np.around(new_stim_value,4)
             # to get the new pulse_intensity value we need to multiply by the max_allowed_intensity from calibration
-            sharedConfig['pulse_intensity_auto'] = sharedConfig['controller_value'] * sharedConfig['stim_max_intensitiy']
+            sharedConfig['pulse_intensity_auto'] = sharedConfig['controller_value'] * sharedConfig['pulse_intensity_man']
             if verbose: print(f"set pulse_intensity_auto to {sharedConfig['pulse_intensity_auto']}")
             
             if verbose: print(f"new stim value = {new_stim_value}")
