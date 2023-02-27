@@ -228,10 +228,12 @@ if __name__ == '__main__':
     pickle.dump(finalData, filehandler)
     filehandler.close()
 
-    # csv (plain text)
+    """
+    # csv (plain text) : replaced by live dump to disk in dedicated functions
     for fileName in ['controller_val_hist','pulse_val_hist','activ_delt_hist','activ_bic_hist']:
         print(f"saving {fileName} : len {len(sharedData[fileName])}")
         np.savetxt(config['dataSaveFolder']+'/conf_'+fileName+'.csv', sharedData[fileName], delimiter=",")
+    """
 
     sleep(3) # give some time to the processes to finish before the main process exits (or it will kill spawned ones), esp. the stimulator to send the disconnection signal to the DLL
 

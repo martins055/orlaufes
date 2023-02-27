@@ -34,8 +34,14 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
     ###########################################################################
 
     # open files on disk
-    fileRms_delt = open(sharedConfig['dataSaveFolder']+'/data_rms_delt.txt', 'ab')
-    fileRms_bic  = open(sharedConfig['dataSaveFolder']+'/data_rms_bic.txt',  'ab')
+    fileRms_delt         = open(sharedConfig['dataSaveFolder']+'/data_rms_delt.txt',             'ab')
+    fileRms_bic          = open(sharedConfig['dataSaveFolder']+'/data_rms_bic.txt',              'ab')
+
+    fileActiv_delt       = open(sharedConfig['dataSaveFolder']+'/data_activ_delt_history.txt',   'ab')
+    fileActiv_bic        = open(sharedConfig['dataSaveFolder']+'/data_activ_bic_history.txt',    'ab')
+
+    fileController_value = open(sharedConfig['dataSaveFolder']+'/data_controller_value.txt',     'ab')
+    fileController_pulse = open(sharedConfig['dataSaveFolder']+'/data_controller_intensity.txt', 'ab')
 
     samples_per_read = sharedConfig['samples_per_read']
 
@@ -168,13 +174,17 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
             
             # save muscle activity history timeseries
             if sharedConfig['active_delt']:
-                sharedData['activ_delt_hist'] = np.concatenate( (sharedData['activ_delt_hist'], np.ones(samples_per_read)),  axis=0 )
+                #sharedData['activ_delt_hist'] = np.concatenate( (sharedData['activ_delt_hist'], np.ones(samples_per_read)),  axis=0 )
+                np.savetxt(fileActiv_delt, np.ones(samples_per_read), delimiter=',')
             else:
-                sharedData['activ_delt_hist'] = np.concatenate( (sharedData['activ_delt_hist'], np.zeros(samples_per_read)), axis=0 )
+                #sharedData['activ_delt_hist'] = np.concatenate( (sharedData['activ_delt_hist'], np.zeros(samples_per_read)), axis=0 )
+                np.savetxt(fileActiv_delt, np.zeros(samples_per_read), delimiter=',')
             if sharedConfig['active_bic']:
-                sharedData['activ_bic_hist']  = np.concatenate( (sharedData['activ_bic_hist'],  np.ones(samples_per_read)),  axis=0 )
+                #sharedData['activ_bic_hist']  = np.concatenate( (sharedData['activ_bic_hist'],  np.ones(samples_per_read)),  axis=0 )
+                np.savetxt(fileActiv_bic, np.ones(samples_per_read), delimiter=',')
             else:
-                sharedData['activ_bic_hist']  = np.concatenate( (sharedData['activ_bic_hist'],  np.zeros(samples_per_read)), axis=0 )
+                #sharedData['activ_bic_hist']  = np.concatenate( (sharedData['activ_bic_hist'],  np.zeros(samples_per_read)), axis=0 )
+                np.savetxt(fileActiv_delt, np.zeros(samples_per_read), delimiter=',')
     
             # provide feedback in the console
             if verbose: print(f"DEL {sharedConfig['active_delt']} ; BIC {sharedConfig['active_delt']}")
@@ -198,7 +208,14 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
             if verbose: print(f"set pulse_intensity_auto to {sharedConfig['pulse_intensity_auto']}")
 
             ###
-            # dump filtered data in csv
+            # dump controller values
+            ###
+
+            np.savetxt(fileController_value, [new_stim_value]                       * len(this_emg_delt_rms), delimiter=',')
+            np.savetxt(new_stim_value,       [sharedConfig['pulse_intensity_auto']] * len(this_emg_delt_rms), delimiter=',')
+
+            ###
+            # dump emg rms data
             ###
             
             np.savetxt(fileRms_delt, this_emg_delt_rms, delimiter=',')
@@ -237,11 +254,15 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
 
             iRms+=1
             sharedConfig['rms_iter'] = iRms
-            if verbose: print(f"# rms: new data, done iter {iRms}")    
+            if verbose: print(f"# rms: new data, done iter {iRms}")
 
     # Graceful exit
     fileRms_delt.close()
     fileRms_bic.close()
+    fileActiv_delt.close()
+    fileActiv_bic.close()
+    fileController_value.close()
+    fileController_pulse.close()
 
 if __name__ == "__main__":
     
