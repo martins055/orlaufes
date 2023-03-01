@@ -112,7 +112,7 @@ def functionLivePlot(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbo
     pulse_intensity_label2 = QLabel()
     if sharedConfig['controller_on']:
         # if auto, the current pulse_intensity is max_allowed_intensity * sharedData['controller_value']
-        new_pulse_intensity = sharedConfig['controller_value'] * sharedConfig['stim_max_intensitiy']
+        new_pulse_intensity = sharedConfig['controller_value'] * sharedConfig['stim_max_intensity']
         pulse_intensity_label2.setText(f"{new_pulse_intensity:.3f}")
     else:
         # if mode manual, it is set manually in the editbox
@@ -787,7 +787,7 @@ def functionLivePlot(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbo
     btn_paramSetController_manual.clicked.connect(slot_SetController_manual)
 
     #pulse_intensity
-    param1 = QLabel(f"Intensity (<{sharedConfig['stim_max_intensitiy']})")
+    param1 = QLabel(f"Intensity (<{sharedConfig['stim_max_intensity']})")
     param1.setStyleSheet("QLabel {background-color: ;}")
     btn_param1_plus  = QPushButton("+")
     btn_param1_minus = QPushButton("-")
@@ -806,8 +806,8 @@ def functionLivePlot(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbo
         this_val = int(edit1.text())
         new_val  = this_val + 1
         # make sure we don't go over the limit
-        if new_val > sharedConfig['stim_max_intensitiy']:
-            new_val = sharedConfig['stim_max_intensitiy']
+        if new_val > sharedConfig['stim_max_intensity']:
+            new_val = sharedConfig['stim_max_intensity']
         edit1.setText(str(new_val))
         slot_btn_param1_set()
     btn_param1_plus.clicked.connect(slot_btn_param1_plus)
@@ -1103,7 +1103,7 @@ def functionLivePlot(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbo
         controller_value_label2.setText(f"{sharedConfig['controller_value']}")
         if sharedConfig['controller_on']:
             # if auto, the current pulse_intensity is max_allowed_intensity * sharedData['controller_value']
-            new_pulse_intensity = sharedConfig['controller_value'] * sharedConfig['stim_max_intensitiy']
+            new_pulse_intensity = sharedConfig['controller_value'] * sharedConfig['stim_max_intensity']
             pulse_intensity_label2.setText(f"{new_pulse_intensity:.3f}")
         else:
             # if mode manual, it is set manually in the editbox

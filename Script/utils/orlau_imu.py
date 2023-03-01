@@ -132,4 +132,21 @@ def funcStreamImu(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=
 if __name__ == "__main__":
 
     print("orlau_live_imu loaded as main")
-
+    
+    devIMU       = delsys.TrignoAccel(channel_range=(0, 150), samples_per_read=300, host='127.0.0.1', timeout=10)
+    connectedIMU = True
+    printColor('Connected to IMU', color='green')
+    devIMU.become_master()
+    devIMU.start()
+    
+    i=0
+    iMax = 5
+    while i<iMax:
+        i+=1
+        print(f"i = {i}/{iMax}")
+        this_data_frame    = devIMU.read()
+        print(this_data_frame)
+    
+    devIMU.stop()
+    devIMU.__del__()
+    

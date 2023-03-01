@@ -212,7 +212,7 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
             ###
 
             np.savetxt(fileController_value, [new_stim_value]                       * len(this_emg_delt_rms), delimiter=',')
-            np.savetxt(new_stim_value,       [sharedConfig['pulse_intensity_auto']] * len(this_emg_delt_rms), delimiter=',')
+            np.savetxt(fileController_pulse,       [sharedConfig['pulse_intensity_auto']] * len(this_emg_delt_rms), delimiter=',')
 
             ###
             # dump emg rms data
