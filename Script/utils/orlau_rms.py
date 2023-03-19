@@ -184,7 +184,7 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
                 np.savetxt(fileActiv_bic, np.ones(samples_per_read), delimiter=',')
             else:
                 #sharedData['activ_bic_hist']  = np.concatenate( (sharedData['activ_bic_hist'],  np.zeros(samples_per_read)), axis=0 )
-                np.savetxt(fileActiv_delt, np.zeros(samples_per_read), delimiter=',')
+                np.savetxt(fileActiv_bic, np.zeros(samples_per_read), delimiter=',')
     
             # provide feedback in the console
             if verbose: print(f"DEL {sharedConfig['active_delt']} ; BIC {sharedConfig['active_delt']}")
