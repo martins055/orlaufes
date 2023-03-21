@@ -34,14 +34,16 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
     ###########################################################################
 
     # open files on disk
-    fileRms_delt         = open(sharedConfig['dataSaveFolder']+'/data_rms_delt.txt',             'ab')
-    fileRms_bic          = open(sharedConfig['dataSaveFolder']+'/data_rms_bic.txt',              'ab')
+    fileRms_delt          = open(sharedConfig['dataSaveFolder']+'/data_rms_delt.txt',             'ab')
+    fileRms_bic           = open(sharedConfig['dataSaveFolder']+'/data_rms_bic.txt',              'ab')
+    fileRms_delt_timenorm = open(sharedConfig['dataSaveFolder']+'/data_rms_delt_timenorm.txt',    'ab')
+    fileRms_bic_timenorm  = open(sharedConfig['dataSaveFolder']+'/data_rms_bic_timenorm.txt',     'ab')
 
-    fileActiv_delt       = open(sharedConfig['dataSaveFolder']+'/data_activ_delt_history.txt',   'ab')
-    fileActiv_bic        = open(sharedConfig['dataSaveFolder']+'/data_activ_bic_history.txt',    'ab')
+    fileActiv_delt        = open(sharedConfig['dataSaveFolder']+'/data_activ_delt_history.txt',   'ab')
+    fileActiv_bic         = open(sharedConfig['dataSaveFolder']+'/data_activ_bic_history.txt',    'ab')
 
-    fileController_value = open(sharedConfig['dataSaveFolder']+'/data_controller_value.txt',     'ab')
-    fileController_pulse = open(sharedConfig['dataSaveFolder']+'/data_controller_intensity.txt', 'ab')
+    fileController_value  = open(sharedConfig['dataSaveFolder']+'/data_controller_value.txt',     'ab')
+    fileController_pulse  = open(sharedConfig['dataSaveFolder']+'/data_controller_intensity.txt', 'ab')
 
     samples_per_read = sharedConfig['samples_per_read']
 
@@ -166,7 +168,7 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
                 pass
 
             # then, decide if its average is below or above the threshold
-            
+
             if verbose: print("is delt active in this batch?")
             #print(f"{np.mean(this_emg_delt_rms)} >\n{this_thres_delt} ?")
             sharedConfig['active_delt']   = np.mean(this_emg_delt_rms) > this_thres_delt
@@ -247,6 +249,13 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
                 sharedData['emg_bic_rms']  = sharedData['emg_bic_rms'][samples_per_read:]   # sharedData['emg_bic_rms'][len(this_emg_bic_rms):]
                 
             if verbose: print(f"after shifting, size: {len(sharedData['emg_delt_rms'])} and {len(sharedData['emg_bic_rms'])}")
+
+            ###
+            # dump emg rms data used in display
+            ###
+            
+            np.savetxt(fileRms_delt_timenorm, this_emg_delt_rms_tn, delimiter=',')
+            np.savetxt(fileRms_bic_timenorm,  this_emg_bic_rms_tn,  delimiter=',')
 
             ###
             # only then (after get;dump;resize), increment iterNumber
