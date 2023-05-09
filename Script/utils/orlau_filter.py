@@ -100,7 +100,7 @@ def funcFilter(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=Fal
             
             # we loop through the last batch of data
             for index in range(ifilter1,0):
-                
+
                 this_value = copy_delt_filt[index]
 
                 # if we have a value that is above the threshold            

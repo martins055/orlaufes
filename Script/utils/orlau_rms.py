@@ -213,8 +213,8 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
             # dump controller values
             ###
 
-            np.savetxt(fileController_value, [new_stim_value]                       * len(this_emg_delt_rms), delimiter=',')
-            np.savetxt(fileController_pulse,       [sharedConfig['pulse_intensity_auto']] * len(this_emg_delt_rms), delimiter=',')
+            np.savetxt(fileController_value, [new_stim_value]                       * len(samples_per_read), delimiter=',')
+            np.savetxt(fileController_pulse, [sharedConfig['pulse_intensity_auto']] * len(samples_per_read), delimiter=',')
 
             ###
             # dump emg rms data
@@ -230,7 +230,7 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
             if verbose: print("adding to shared dict")
             if verbose: print(f"current size: {len(sharedData['emg_delt_rms'])} and {len(sharedData['emg_bic_rms'])}")
 
-            # we have to make sure that they are the same size as RMS changes the number of points         
+            # we have to make sure that they are the same size as RMS changes the number of points
             this_emg_delt_rms_tn = time_normalise(this_emg_delt_rms, length=samples_per_read)
             this_emg_bic_rms_tn  = time_normalise(this_emg_bic_rms,  length=samples_per_read)
             if verbose: print(f"after time_normalise, their length is {len(this_emg_delt_rms_tn)} and {len(this_emg_bic_rms_tn)}")
