@@ -213,8 +213,8 @@ def funcRms(sharedConfig, sharedData, sharedQueue1, sharedQueue2, verbose=False,
             # dump controller values
             ###
 
-            np.savetxt(fileController_value, [new_stim_value]                       * len(samples_per_read), delimiter=',')
-            np.savetxt(fileController_pulse, [sharedConfig['pulse_intensity_auto']] * len(samples_per_read), delimiter=',')
+            np.savetxt(fileController_value, [new_stim_value]                       * samples_per_read, delimiter=',')
+            np.savetxt(fileController_pulse, [sharedConfig['pulse_intensity_auto']] * samples_per_read, delimiter=',')
 
             ###
             # dump emg rms data
