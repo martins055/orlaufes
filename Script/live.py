@@ -26,6 +26,7 @@ CURR_DIR = os.path.dirname(os.path.realpath(__file__))
 os.chdir(os.path.abspath(os.path.dirname(__file__)))
 sys.path += [CURR_DIR, CURR_DIR+'/utils/']
 import numpy as np
+import json
 from datetime import datetime
 from time import sleep
 import scipy.io as sio
@@ -227,6 +228,8 @@ if __name__ == '__main__':
     filehandler = open(config['dataSaveFolder']+'/conf_sharedData.pickle', 'wb')
     pickle.dump(finalData, filehandler)
     filehandler.close()
+    with open(config['dataSaveFolder']+'/conf_sharedConfig.json', "w") as fp:
+        json.dump(finalConfig , fp) 
 
     """
     # csv (plain text) : replaced by live dump to disk in dedicated functions
